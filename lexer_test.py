@@ -50,11 +50,16 @@ class LexerTest(unittest.TestCase):
 
     def test_empty_move(self):
         result = self.l.move("")
-        self.assertEqual(result, [("\0", "EOF")])
+        self.assertEqual(result, [])
 
     def test_literal_move(self):
         result = self.l.move("+-")
-        self.assertEqual(result, [("+", "LITERAL"), ("-", "LITERAL"), ("\0", "EOF")])
+        self.assertEqual(result, [("+", "LITERAL"), ("-", "LITERAL")])
+
+
+"""     def test_identifier_move(self):
+        result = self.l.move("abc123")
+        self.assertEqual(result, [("abc123", "IDEN")]) """
 
 
 if __name__ == "__main__":

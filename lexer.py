@@ -29,10 +29,15 @@ class Lexer:
     terminator = ["\0"]
 
     moves = [
-        ("start", terminator, "start", "EOF"),
+        ("start", terminator, "sterminated", None),
         ("start", operators, "literals", "LITERAL"),
         ("literals", operators, "literals", "LITERAL"),
-        ("literals", terminator, "start", "EOF"),
+        ("literals", terminator, "terminated", None),
+        ("start", characters, "identifiers", None),
+        ("identifiers", characters, "identifiers", None),
+        ("identifiers", numerics, "identifiers", None),
+        ("identifiers", operators, "literals", "LITERAL"),
+        ("identifiers", terminator, "start", "EOF"),
     ]
 
     def __init__(self):
@@ -43,6 +48,7 @@ class Lexer:
         return self.fa.move(char)
 
     def move(self, string):
+        self.fa.state = "start"
         res = []
         part = ""
         string += "\0"
