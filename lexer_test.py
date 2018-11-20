@@ -126,6 +126,12 @@ class LexerTest(unittest.TestCase):
             ],
         )
 
+    def test_unknown_chars_error(self):
+        result = self.l.move("!@")
+        self.assertEqual(result, [("!@", "ERROR")])
+        result = self.l.move(" !@  jtf")
+        self.assertEqual(result, [("!@", "ERROR"), ("jtf", "IDEN")])
+
 
 if __name__ == "__main__":
     unittest.main()

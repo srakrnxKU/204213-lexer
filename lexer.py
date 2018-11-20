@@ -63,10 +63,18 @@ class Lexer:
         res = []
         part = ""
         string += "\0"
+        in_error = False
         for i in string:
             part += i
             output = self.single_move(i)
-            if output != None:
-                res.append((part[:-1].strip(), output))
-                part = i.strip()
+            if output == False:
+                in_error = True
+            else:
+                if in_error:
+                    res.append((part[:-1].strip(), "ERROR"))
+                    part = i.strip()
+                    in_error = False
+                if output != None:
+                    res.append((part[:-1].strip(), output))
+                    part = i.strip()
         return res
