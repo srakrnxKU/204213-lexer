@@ -55,12 +55,16 @@ class LexerTest(unittest.TestCase):
     def test_literal_move(self):
         result = self.l.move("+-")
         self.assertEqual(result, [("+", "LITERAL"), ("-", "LITERAL")])
+        result = self.l.move("  - +   ")
+        self.assertEqual(result, [("-", "LITERAL"), ("+", "LITERAL")])
 
     def test_identifier_move(self):
         result = self.l.move("abc123")
         self.assertEqual(result, [("abc123", "IDEN")])
         result = self.l.move("abc123 def")
         self.assertEqual(result, [("abc123", "IDEN"), ("def", "IDEN")])
+        result = self.l.move("   m no   ")
+        self.assertEqual(result, [("m", "IDEN"), ("no", "IDEN")])
 
     def test_literal_with_identifier(self):
         result = self.l.move("abc123+def-g")
@@ -77,6 +81,10 @@ class LexerTest(unittest.TestCase):
         result = self.l.move("abc123 def-g")
         self.assertEqual(
             result, [("abc123", "IDEN"), ("def", "IDEN"), ("-", "LITERAL"), ("g", "IDEN")]
+        )
+        result = self.l.move("    pqr    st +   u  ")
+        self.assertEqual(
+            result, [("pqr", "IDEN"), ("st", "IDEN"), ("+", "LITERAL"), ("u", "IDEN")]
         )
 
 

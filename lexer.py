@@ -31,8 +31,10 @@ class Lexer:
     moves = [
         ("start", terminator, "sterminated", None),
         ("start", operators, "literals", None),
+        ("start", whitespaces, "start", None),
         ("literals", operators, "literals", "LITERAL"),
         ("literals", terminator, "terminated", "LITERAL"),
+        ("literals", whitespaces, "start", "LITERAL"),
         ("start", characters, "identifiers", None),
         ("identifiers", characters, "identifiers", None),
         ("identifiers", numerics, "identifiers", None),
@@ -58,6 +60,6 @@ class Lexer:
             part += i
             output = self.single_move(i)
             if output != None:
-                res.append((part[:-1], output))
+                res.append((part[:-1].strip(), output))
                 part = i.strip()
         return res
