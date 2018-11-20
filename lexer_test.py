@@ -92,6 +92,39 @@ class LexerTest(unittest.TestCase):
         self.assertEqual(result, [("123", "CONST")])
         result = self.l.move("   123    ")
         self.assertEqual(result, [("123", "CONST")])
+        result = self.l.move("   123   456 ")
+        self.assertEqual(result, [("123", "CONST"), ("456", "CONST")])
+
+    def test_constant_with_literals(self):
+        result = self.l.move("123+45")
+        self.assertEqual(result, [("123", "CONST"), ("+", "LITERAL"), ("45", "CONST")])
+        result = self.l.move("   123 +   45 ")
+        self.assertEqual(result, [("123", "CONST"), ("+", "LITERAL"), ("45", "CONST")])
+
+    def test_constant_identifiers_literals(self):
+        result = self.l.move("12a+1b23")
+        self.assertEqual(
+            result,
+            [
+                ("12", "CONST"),
+                ("a", "IDEN"),
+                ("+", "LITERAL"),
+                ("1", "CONST"),
+                ("b23", "IDEN"),
+            ],
+        )
+        result = self.l.move("    12a + 1b23 c34")
+        self.assertEqual(
+            result,
+            [
+                ("12", "CONST"),
+                ("a", "IDEN"),
+                ("+", "LITERAL"),
+                ("1", "CONST"),
+                ("b23", "IDEN"),
+                ("c34", "IDEN"),
+            ],
+        )
 
 
 if __name__ == "__main__":
