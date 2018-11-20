@@ -37,7 +37,8 @@ class Lexer:
         ("identifiers", characters, "identifiers", None),
         ("identifiers", numerics, "identifiers", None),
         ("identifiers", operators, "literals", "LITERAL"),
-        ("identifiers", terminator, "start", "EOF"),
+        ("identifiers", terminator, "terminated", "IDEN"),
+        ("identifiers", whitespaces, "start", "IDEN"),
     ]
 
     def __init__(self):
@@ -53,7 +54,8 @@ class Lexer:
         part = ""
         string += "\0"
         for i in string:
-            part += i
+            if i not in self.whitespaces and i not in self.terminator:
+                part += i
             output = self.single_move(i)
             if output != None:
                 res.append((part, output))
