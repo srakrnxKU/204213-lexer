@@ -46,10 +46,15 @@ class AutomataTest(unittest.TestCase):
 
 
 class LexerTest(unittest.TestCase):
+    l = Lexer()
+
     def test_empty_move(self):
-        l = Lexer()
-        result = l.move("")
+        result = self.l.move("")
         self.assertEqual(result, [("\0", "EOF")])
+
+    def test_literal_move(self):
+        result = self.l.move("+-")
+        self.assertEqual(result, [("+", "LITERAL"), ("-", "LITERAL"), ("\0", "EOF")])
 
 
 if __name__ == "__main__":

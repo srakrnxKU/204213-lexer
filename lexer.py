@@ -29,8 +29,10 @@ class Lexer:
     terminator = ["\0"]
 
     moves = [
-        ("start", operators, "literals", None),
         ("start", terminator, "start", "EOF"),
+        ("start", operators, "literals", "LITERAL"),
+        ("literals", operators, "literals", "LITERAL"),
+        ("literals", terminator, "start", "EOF"),
     ]
 
     def __init__(self):
