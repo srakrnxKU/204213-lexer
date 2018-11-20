@@ -23,13 +23,13 @@ class AutomataWithOutput:
 class Lexer:
     numerics = list("0123456789")
     characters = list("qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM")
-    operators = list("+-*/=()")
+    operators = list("+-*/()")
     dot = ["."]
     whitespaces = [" ", "\n", "\r", "\t"]
     terminator = ["\0"]
 
     moves = [
-        ("start", terminator, "sterminated", None),
+        ("start", terminator, "terminated", None),
         ("start", operators, "literals", None),
         ("start", whitespaces, "start", None),
         ("start", characters, "identifiers", None),
@@ -52,11 +52,18 @@ class Lexer:
         ("constants", dot, "constants-dot", None),
         ("constants-dot", terminator, "terminated", "ERROR"),
         ("constants-dot", numerics, "constant-decimals", None),
+        ("constants-dot", characters, "identifiers", "ERROR"),
         ("constant-decimals", numerics, "constant-decimals", None),
         ("constant-decimals", whitespaces, "start", "CONST"),
         ("constant-decimals", terminator, "terminated", "CONST"),
         ("constant-decimals", operators, "literals", "CONST"),
         ("constant-decimals", characters, "identifiers", "CONST"),
+        ("identifiers", dot, "dot-error", "IDEN"),
+        ("dot-error", terminator, "terminated", "ERROR"),
+        ("dot-error", operators, "literals", "ERROR"),
+        ("dot-error", whitespaces, "dot-error", "ERROR"),
+        ("dot-error", characters, "identifiers", "ERROR"),
+        ("dot-error", numerics, "constants", "ERROR"),
     ]
 
     def __init__(self):
