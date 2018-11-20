@@ -132,6 +132,12 @@ class LexerTest(unittest.TestCase):
         result = self.l.move(" !@  jtf")
         self.assertEqual(result, [("!@", "ERROR"), ("jtf", "IDEN")])
 
+    def test_decimal(self):
+        result = self.l.move("123.")
+        self.assertEqual(result, [("123.", "ERROR")])
+        result = self.l.move("123.45")
+        self.assertEqual(result, [("123.45", "CONST")])
+
 
 if __name__ == "__main__":
     unittest.main()

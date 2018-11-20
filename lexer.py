@@ -49,6 +49,14 @@ class Lexer:
         ("constants", terminator, "terminated", "CONST"),
         ("constants", operators, "literals", "CONST"),
         ("constants", characters, "identifiers", "CONST"),
+        ("constants", dot, "constants-dot", None),
+        ("constants-dot", terminator, "terminated", "ERROR"),
+        ("constants-dot", numerics, "constant-decimals", None),
+        ("constant-decimals", numerics, "constant-decimals", None),
+        ("constant-decimals", whitespaces, "start", "CONST"),
+        ("constant-decimals", terminator, "terminated", "CONST"),
+        ("constant-decimals", operators, "literals", "CONST"),
+        ("constant-decimals", characters, "identifiers", "CONST"),
     ]
 
     def __init__(self):
@@ -78,3 +86,11 @@ class Lexer:
                     res.append((part[:-1].strip(), output))
                     part = i.strip()
         return res
+
+
+if __name__ == "__main__":
+    l = Lexer()
+    inp = input()
+    results = l.move(inp)
+    for result in results:
+        print("{}\t{}".format(result[1], result[0]))
