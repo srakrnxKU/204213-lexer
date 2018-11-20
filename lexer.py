@@ -42,6 +42,10 @@ class Lexer:
         ("literals", characters, "identifiers", "LITERAL"),
         ("identifiers", terminator, "terminated", "IDEN"),
         ("identifiers", whitespaces, "start", "IDEN"),
+        ("start", numerics, "constants", None),
+        ("constants", numerics, "constants", None),
+        ("constants", whitespaces, "start", "CONST"),
+        ("constants", terminator, "terminated", "CONST"),
     ]
 
     def __init__(self):

@@ -87,6 +87,12 @@ class LexerTest(unittest.TestCase):
             result, [("pqr", "IDEN"), ("st", "IDEN"), ("+", "LITERAL"), ("u", "IDEN")]
         )
 
+    def test_constant_no_decimal_point(self):
+        result = self.l.move("123")
+        self.assertEqual(result, [("123", "CONST")])
+        result = self.l.move("   123    ")
+        self.assertEqual(result, [("123", "CONST")])
+
 
 if __name__ == "__main__":
     unittest.main()
