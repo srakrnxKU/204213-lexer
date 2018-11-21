@@ -84,7 +84,7 @@ class Lexer:
         ("identifiers", "IDEN"),
         ("literals", "LITERAL"),
         ("constants", "CONST"),
-        ("constants-dot", "ERROR"),
+        ("constants-dot", None),
         ("constant-decimals", "CONST"),
     ]
 
