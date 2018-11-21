@@ -86,6 +86,7 @@ class Lexer:
         ("constants", "CONST"),
         ("constants-dot", None),
         ("constant-decimals", "CONST"),
+        ("error", "ERROR")
     ]
 
     def __init__(self, debug=False):
