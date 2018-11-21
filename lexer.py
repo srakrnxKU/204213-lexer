@@ -4,6 +4,8 @@ Sirakorn Lamyai (5910500023)
 Department of Computer Engineering, Kasetsart U.
 """
 
+import sys
+
 
 class AutomataWithOutput:
     def __init__(self, moves, error_moves, start):
@@ -112,7 +114,7 @@ class Lexer:
 
 if __name__ == "__main__":
     l = Lexer(debug=False)
-    inp = input()
+    inp = "".join(sys.stdin.readlines())
     results = l.move(inp)
     for result in results:
         print("{}\t{}".format(result[1], result[0]))
