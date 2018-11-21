@@ -6,18 +6,23 @@ Department of Computer Engineering, Kasetsart U.
 
 
 class AutomataWithOutput:
-    def __init__(self, moves, start):
+    def __init__(self, moves, error_moves, start):
         self.moves = moves
+        self.error_moves = error_moves
         self.start = start
         self.state = start
 
     def move(self, inp):
         move = [i for i in self.moves if i[0] == self.state and inp in i[1]]
         if len(move) == 0:
-            self.state = self.start
-            return False
-        self.state = move[0][2]
-        return move[0][3]
+            before_state = self.state
+            self.state = "error"
+            in_error = [i[1] for i in self.error_moves if i[0] == before_state]
+            if len(in_error) > 0:
+                return in_error[0]
+        else:
+            self.state = move[0][2]
+            return move[0][3]
 
 
 class Lexer:
@@ -53,6 +58,7 @@ class Lexer:
         ("constants-dot", terminator, "terminated", "ERROR"),
         ("constants-dot", numerics, "constant-decimals", None),
         ("constants-dot", characters, "identifiers", "ERROR"),
+        ("constants-dot", operators, "literals", "ERROR"),
         ("constant-decimals", numerics, "constant-decimals", None),
         ("constant-decimals", whitespaces, "start", "CONST"),
         ("constant-decimals", terminator, "terminated", "CONST"),
@@ -64,10 +70,25 @@ class Lexer:
         ("dot-error", whitespaces, "dot-error", "ERROR"),
         ("dot-error", characters, "identifiers", "ERROR"),
         ("dot-error", numerics, "constants", "ERROR"),
+        ("error", terminator, "terminated", "ERROR"),
+        ("error", whitespaces, "start", "ERROR"),
+        ("error", numerics, "constants", "ERROR"),
+        ("error", operators, "literals", "ERROR"),
+        ("error", characters, "identifiers", "ERROR"),
     ]
 
-    def __init__(self):
-        self.fa = AutomataWithOutput(self.moves, "start")
+    error_moves = [
+        ("start", None),
+        ("identifiers", "IDEN"),
+        ("literals", "LITERAL"),
+        ("constants", "CONST"),
+        ("constants-dot", "ERROR"),
+        ("constant-decimals", "CONST"),
+    ]
+
+    def __init__(self, debug=False):
+        self.fa = AutomataWithOutput(self.moves, self.error_moves, "start")
+        self.debug = debug
         self.results = []
 
     def single_move(self, char):
@@ -78,25 +99,19 @@ class Lexer:
         res = []
         part = ""
         string += "\0"
-        in_error = False
         for i in string:
             part += i
             output = self.single_move(i)
-            if output == False:
-                in_error = True
-            else:
-                if in_error:
-                    res.append((part[:-1].strip(), "ERROR"))
-                    part = i.strip()
-                    in_error = False
-                if output != None:
-                    res.append((part[:-1].strip(), output))
-                    part = i.strip()
+            if self.debug:
+                print("{} {} {}".format(i, self.fa.state, output))
+            if output != None:
+                res.append((part[:-1].strip(), output))
+                part = i.strip()
         return res
 
 
 if __name__ == "__main__":
-    l = Lexer()
+    l = Lexer(debug=False)
     inp = input()
     results = l.move(inp)
     for result in results:
